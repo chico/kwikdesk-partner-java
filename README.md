@@ -9,9 +9,12 @@ Java 6 or later.
 ## Install
 
 	mvn install
-	mvn test
 
 ## Usage
 
-	SearchResponse response = KwikDesk.api.search("#kwikdesk");
-	KwikDesk.api.message("secret-token", "This is the message I want to post #kwikdesk");
+	String token = KwikDesk.api.token("my-app").getToken();
+	KwikDesk.api.message(token, new Message("This is a private message on a secure channel"));
+	ChannelResponse response = KwikDesk.api.channel(token);
+	SearchResponse response = KwikDesk.api.search(token, "kwikdesk");
+	KwikDesk.api.time();
+

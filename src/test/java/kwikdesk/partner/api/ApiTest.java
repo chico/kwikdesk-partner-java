@@ -47,6 +47,17 @@ public class ApiTest {
     assertEquals(response.getError().intValue(), 0);
     assertEquals(response.getToken(), token);
   }
+  
+  @Test
+  public void testChannel() {
+    String url = format("%s", Api.ApiPath.CHANNEL);
+    when(mockHttpClient.get(url, tokenHeader)).thenReturn(readFromRawResourceFile("/channel_response.json"));
+    ChannelResponse response = api.channel(token);
+    verify(mockHttpClient, times(1)).get(url, tokenHeader);
+    assertEquals(response.getError().intValue(), 0);
+    assertEquals(response.getResults().size(), 1);
+    assertEquals(response.getResults().get(0).getContent(), "This is a private message on a secure channel");
+  }
 
   @Test
   public void testSearch() {
@@ -68,6 +79,18 @@ public class ApiTest {
     MessageResponse response = api.message(token, message);
     verify(mockHttpClient, times(1)).post(Api.ApiPath.MESSAGES, tokenHeader, messageJSON);
     assertEquals(response.getError().intValue(), 0);
+  }
+  
+  @Test
+  public void testTime() {
+    String url = format("%s", Api.ApiPath.TIME);
+    when(mockHttpClient.get(url)).thenReturn(readFromRawResourceFile("/time_response.json"));
+    TimeResponse response = api.time();
+    verify(mockHttpClient, times(1)).get(url);
+    assertEquals(response.getError().intValue(), 0);
+    assertEquals(response.getIso(), "2014-03-21T21:48:26.053809Z");
+    assertEquals(response.getTimezone(), "GMT");
+    assertEquals(response.getUnixTimestamp(), new Long(1395438506));
   }
 
 }

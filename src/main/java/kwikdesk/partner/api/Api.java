@@ -16,8 +16,10 @@ public class Api {
 
   public interface ApiPath {
     public static final String TOKEN = format("%s/token", environment.getApiBase());
+    public static final String CHANNEL = format("%s/channel", environment.getApiBase());
     public static final String SEARCH = format("%s/search", environment.getApiBase());
     public static final String MESSAGES = format("%s/messages", environment.getApiBase());
+    public static final String TIME = format("%s/server-time", environment.getApiBase());    
   }
   
   public interface ApiHeader {
@@ -34,6 +36,10 @@ public class Api {
     appName = (appName != null) ? appName : "";
     return fromJson(httpClient.post(ApiPath.TOKEN, headers(ApiHeader.APPNAME, appName), null), TokenResponse.class);
   }
+  
+  public ChannelResponse channel(String token) {
+    return fromJson(httpClient.get(format("%s", ApiPath.CHANNEL), headers(ApiHeader.TOKEN, token)), ChannelResponse.class);
+  }
 
   public SearchResponse search(String token, String q) {
     return fromJson(httpClient.get(format("%s?q=%s", ApiPath.SEARCH, Utils.encode(q)), headers(ApiHeader.TOKEN, token)), SearchResponse.class);
@@ -41,6 +47,10 @@ public class Api {
 
   public MessageResponse message(String token, Message message) {
     return fromJson(httpClient.post(ApiPath.MESSAGES, headers(ApiHeader.TOKEN, token), toJson(message)), MessageResponse.class);
+  }
+  
+  public TimeResponse time() {
+    return fromJson(httpClient.get(format("%s", ApiPath.TIME)), TimeResponse.class);
   }
   
   protected Map<String, String> headers(String name, String value, String[]... nameValuePairs) {
